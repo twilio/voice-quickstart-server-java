@@ -24,9 +24,10 @@ import static spark.Spark.get;
 
 public class Webapp {
 
-    static final String CALLER_NUMBER = "(252) 544-5359"; //""1234567890";
-    static final String CALLER_ID = "client:quick_start";
     static final String IDENTITY = "alice";
+    static final String CALLER_ID = "client:quick_start";
+    // Use a valid Twilio number by adding to your account via https://www.twilio.com/console/phone-numbers/verified
+    static final String CALLER_NUMBER = "1234567890";
 
     public static void main(String[] args) throws Exception {
         // Load the .env file into environment
@@ -35,7 +36,8 @@ public class Webapp {
         // Log all requests and responses
         afterAfter(new LoggingFilter());
 
-        // Create an access token using our Twilio credentials
+        // Create an access token which we will sign and return to the client,
+        // containing the grant we just created
         get("/accessToken", (request, response) -> {
             // Read the identity param provided
             final String identity = request.queryParams("identity") != null ? request.queryParams("identity") : IDENTITY;
@@ -57,7 +59,6 @@ public class Webapp {
             return token.toJwt();
         });
 
-        // Make an
         get("/makeCall", (request, response) -> {
             // Load the .env file into environment
             dotenv();
@@ -119,7 +120,6 @@ public class Webapp {
             return call.getSid();
         });
 
-        // Place an outgoing call using REST Api
         get("/incomingCall", (request, response) -> {
             // Load the .env file into environment
             dotenv();

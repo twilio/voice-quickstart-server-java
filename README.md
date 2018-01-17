@@ -1,6 +1,6 @@
 Programmable Voice: Quickstart Application Server - Java
 ===
-This repository contains the server-side web application required to run the [Twilio Programmable Voice iOS SDK Quickstart](https://www.twilio.com/docs/api/voice-sdk/ios/getting-started) and [Android SDK Quickstart](https://www.twilio.com/docs/api/voice-sdk/android/getting-started) mobile sample apps, written in Node.js.
+This repository contains the server-side web application required to run the [Twilio Programmable Voice iOS SDK Quickstart](https://www.twilio.com/docs/api/voice-sdk/ios/getting-started) and [Android SDK Quickstart](https://www.twilio.com/docs/api/voice-sdk/android/getting-started) mobile sample apps, written in Java.
 
 Looking for the Quickstart mobile app?
 
@@ -22,7 +22,7 @@ Prerequisites
 ## Setting up the Java Application
 
 This application uses the lightweight [Spark Framework](http://sparkjava.com/), and
-requires Java 8 and [Maven](https://maven.apache.org/install.html). 
+requires Java 8 and [Maven](https://maven.apache.org/install.html).
 
 Begin by creating a configuration file for your application:
 
@@ -30,7 +30,7 @@ Begin by creating a configuration file for your application:
 cp .env.example .env
 ```
 
-Edit `.env` with the three configuration parameters we gathered from above. 
+Edit `.env` with the three configuration parameters we gathered from above.
 
 Next, we compile our application code:
 
