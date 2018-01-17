@@ -36,8 +36,11 @@ public class Webapp {
         // Log all requests and responses
         afterAfter(new LoggingFilter());
 
-        // Create an access token which we will sign and return to the client,
-        // containing the grant we just created
+        /**
+         * Creates an access token with VoiceGrant using your Twilio credentials.
+         *
+         * @returns The Access Token string
+         */
         get("/accessToken", (request, response) -> {
             // Read the identity param provided
             final String identity = request.queryParams("identity") != null ? request.queryParams("identity") : IDENTITY;
@@ -59,6 +62,16 @@ public class Webapp {
             return token.toJwt();
         });
 
+        /**
+         * Creates an endpoint that can be used in your TwiML App as the Voice Request Url.
+         * <br><br>
+         * In order to make an outgoing call using Twilio Voice SDK, you need to provide a
+         * TwiML App SID in the Access Token. You can run your server, make it publicly
+         * accessible and use `/makeCall` endpoint as the Voice Request Url in your TwiML App.
+         * <br><br>
+         *
+         * @returns The TwiMl used to respond to an outgoing call
+         */
         get("/makeCall", (request, response) -> {
             // Load the .env file into environment
             dotenv();
@@ -93,7 +106,11 @@ public class Webapp {
             return voiceResponse.toXml();
         });
 
-        // Place an outgoing call using REST Api
+        /**
+         * Makes a call to the specified client using the Twilio REST API.
+         *
+         * @returns The CallSid
+         */
         get("/placeCall", (request, response) -> {
             // Load the .env file into environment
             dotenv();
@@ -109,6 +126,7 @@ public class Webapp {
 
             com.twilio.type.Client clientEndpoint = new com.twilio.type.Client(to);
             PhoneNumber from = new PhoneNumber(CALLER_NUMBER);
+            // The fully qualified URL that should be consulted by Twilio when the call connects.
             URI uri = URI.create(request.scheme() + "://" + request.host() + "/incomingCall");
 
             // Make the call
@@ -120,6 +138,9 @@ public class Webapp {
             return call.getSid();
         });
 
+        /**
+         * Creates an endpoint that plays back a greeting.
+         */
         get("/incomingCall", (request, response) -> {
             // Load the .env file into environment
             dotenv();
