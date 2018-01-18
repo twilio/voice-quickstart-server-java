@@ -44,7 +44,7 @@ Now we should be all set! Run the application using the `java -jar` command.
 java -jar target/voice-quickstart-1.0-SNAPSHOT.jar
 ```
 
-To generate Access Token, visit [http://localhost:4567?identity=alice](http://localhost:4567?identity=alice).
+To generate Access Token, visit [http://localhost:4567/accessToken?identity=alice](http://localhost:4567/accessToken?identity=alice).
 
 ### Up and running
 ---
