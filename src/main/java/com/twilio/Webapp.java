@@ -47,7 +47,7 @@ public class Webapp {
 
             // Create Voice grant
             VoiceGrant grant = new VoiceGrant();
-            grant.setOutgoingApplicationSid(System.getProperty("OUTGOING_APP_SID"));
+            grant.setOutgoingApplicationSid(System.getProperty("APP_SID"));
             grant.setPushCredentialSid(System.getProperty("PUSH_CREDENTIAL_SID"));
 
             // Create access token
