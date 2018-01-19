@@ -80,9 +80,10 @@ public class Webapp {
             afterAfter(new LoggingFilter());
 
             final String to = request.queryParams("to");
+            System.out.println(to);
             VoiceResponse voiceResponse;
 
-            if (to == null) {
+            if (to == null || to.isEmpty()) {
                 Say say = new Say.Builder("Congratulations! You have made your first call! Good bye.").build();
                 voiceResponse = new VoiceResponse.Builder().say(say).build();
             } else if (Character.isDigit(to.charAt(0)) || to.charAt(0) == '+') {
