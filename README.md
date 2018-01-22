@@ -30,7 +30,11 @@ Begin by creating a configuration file for your application:
 cp .env.example .env
 ```
 
-Edit `.env` with the three configuration parameters we gathered from above.
+Edit `.env` with the three configuration parameters we gathered from above. Export the configuration in this file as system environment variables like so on Unix based systems:
+
+```bash
+source .env
+```
 
 Next, we compile our application code:
 
