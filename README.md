@@ -19,7 +19,8 @@ Prerequisites
 * A Twilio Account. Don't have one? [Sign up](https://www.twilio.com/try-twilio) for free!
 * Follow the [iOS full quickstart tutorial here](https://www.twilio.com/docs/api/voice-sdk/ios/getting-started) or [Android full quickstart tutorial here](https://www.twilio.com/docs/api/voice-sdk/android/getting-started).
 
-## Setting up the Java Application
+Setting up the Java Application
+---
 
 This application uses the lightweight [Spark Framework](http://sparkjava.com/), and
 requires Java 8 and [Maven](https://maven.apache.org/install.html).
@@ -50,7 +51,7 @@ java -jar target/voice-quickstart-1.0-SNAPSHOT.jar
 
 To generate Access Token, visit [http://localhost:4567/accessToken?identity=alice](http://localhost:4567/accessToken?identity=alice).
 
-### Up and running
+Up and running
 ---
 
 This web application needs to be accessbile on the public internet in order to receive webhook requests from Twilio. [Ngrok](https://ngrok.com/) is a great options for getting this done quickly.
