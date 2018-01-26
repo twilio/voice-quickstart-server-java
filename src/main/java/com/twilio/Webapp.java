@@ -174,9 +174,7 @@ public class Webapp {
                 System.getProperty("API_KEY"),
                 System.getProperty("API_SECRET")
         ).identity(identity).grant(grant).build();
-
         System.out.println(token.toJwt());
-
         return token.toJwt();
     }
 
@@ -197,13 +195,11 @@ public class Webapp {
                     .build();
             voiceResponse = new VoiceResponse.Builder().dial(dial).build();
         }
-
         try {
             toXml= voiceResponse.toXml();
         } catch (TwiMLException e) {
             e.printStackTrace();
         }
-
         return toXml;
     }
 
@@ -218,7 +214,6 @@ public class Webapp {
         Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
         // Print the call SID (a 32 digit hex like CA123..)
         System.out.println(call.getSid());
-
         return call.getSid();
     }
 
