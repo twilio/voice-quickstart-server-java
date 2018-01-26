@@ -182,7 +182,7 @@ public class Webapp {
 
     private static String call(String to) {
         VoiceResponse voiceResponse;
-
+        String toXml = null;
         if (to == null || to.isEmpty()) {
             Say say = new Say.Builder("Congratulations! You have made your first call! Good bye.").build();
             voiceResponse = new VoiceResponse.Builder().say(say).build();
@@ -199,12 +199,12 @@ public class Webapp {
         }
 
         try {
-            System.out.println(voiceResponse.toXml());
+            toXml= voiceResponse.toXml();
         } catch (TwiMLException e) {
             e.printStackTrace();
         }
 
-        return voiceResponse.toXml();
+        return toXml;
     }
 
     private static String callUsingRestClient(String to, URI uri) {
@@ -214,10 +214,8 @@ public class Webapp {
 
         com.twilio.type.Client clientEndpoint = new com.twilio.type.Client(to);
         PhoneNumber from = new PhoneNumber(CALLER_NUMBER);
-
         // Make the call
         Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
-
         // Print the call SID (a 32 digit hex like CA123..)
         System.out.println(call.getSid());
 
@@ -228,9 +226,7 @@ public class Webapp {
         VoiceResponse voiceResponse;
         Say say = new Say.Builder("Congratulations! You have received your first inbound call! Good bye.").build();
         voiceResponse = new VoiceResponse.Builder().say(say).build();
-
         System.out.println(voiceResponse.toXml().toString());
-
         return voiceResponse.toXml();
     }
 }
