@@ -89,6 +89,9 @@ public class Webapp {
          * In order to make an outgoing call using Twilio Voice SDK, you need to provide a
          * TwiML App SID in the Access Token. You can run your server, make it publicly
          * accessible and use `/makeCall` endpoint as the Voice Request Url in your TwiML App.
+         *
+         * This method expects POST data in {"to":"to_number_or_client_name"} format.
+         *
          * <br><br>
          *
          * @returns The TwiMl used to respond to an outgoing call
@@ -119,6 +122,7 @@ public class Webapp {
 
         /**
          * Makes a call to the specified client using the Twilio REST API.
+         * This method expects POST data in {"to":"to_number_or_client_name"} format.
          *
          * @returns The CallSid
          */
