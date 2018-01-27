@@ -23,7 +23,14 @@ import static spark.Spark.afterAfter;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
-import org.json.JSONObject;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class Webapp {
 
@@ -58,10 +65,12 @@ public class Webapp {
         post("/accessToken", (request, response) -> {
             // Read the identity param provided
             String id = null;
+            List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
+            Map<String, String> params = toMap(pairs);
             try {
-                id = (String) new JSONObject(request.body()).get("identity");
-            } catch (org.json.JSONException e) {
-                System.out.println(e.getMessage());
+                id = params.get("identity");
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
             }
             final String identity = id != null ? id : IDENTITY;
             return getAccessToken(identity);
@@ -90,18 +99,18 @@ public class Webapp {
          * TwiML App SID in the Access Token. You can run your server, make it publicly
          * accessible and use `/makeCall` endpoint as the Voice Request Url in your TwiML App.
          *
-         * This method expects POST data in {"to":"to_number_or_client_name"} format.
-         *
          * <br><br>
          *
          * @returns The TwiMl used to respond to an outgoing call
          */
         post("/makeCall", (request, response) -> {
-            String to = null;
+            String to = "";
+            List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
+            Map<String, String> params = toMap(pairs);
             try {
-                to = (String) new JSONObject(request.body()).get("to");
-            } catch (org.json.JSONException e) {
-                System.out.println(e.getMessage());
+                to = params.get("to");
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
             }
             System.out.println(to);
             return call(to);
@@ -122,16 +131,17 @@ public class Webapp {
 
         /**
          * Makes a call to the specified client using the Twilio REST API.
-         * This method expects POST data in {"to":"to_number_or_client_name"} format.
          *
          * @returns The CallSid
          */
         post("/placeCall", (request, response) -> {
-            String to = null;
+            String to = "";
+            List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
+            Map<String, String> params = toMap(pairs);
             try {
-                to = (String) new JSONObject(request.body()).get("to");
-            } catch (org.json.JSONException e) {
-                System.out.println(e.getMessage());
+                to = params.get("to");
+            } catch (Exception e) {
+                return "Error: " + e.getMessage();
             }
             // The fully qualified URL that should be consulted by Twilio when the call connects.
             URI uri = URI.create(request.scheme() + "://" + request.host() + "/incoming");
@@ -152,18 +162,6 @@ public class Webapp {
         post("/incoming", (request, response) -> {
             return greet();
         });
-    }
-
-    private static void dotenv() throws Exception {
-        final File env = new File(".env");
-        if (!env.exists()) {
-            return;
-        }
-
-        final Properties props = new Properties();
-        props.load(new FileInputStream(env));
-        props.putAll(System.getenv());
-        props.entrySet().forEach(p -> System.setProperty(p.getKey().toString(), p.getValue().toString()));
     }
 
     private static String getAccessToken(String identity) {
@@ -200,7 +198,7 @@ public class Webapp {
             voiceResponse = new VoiceResponse.Builder().dial(dial).build();
         }
         try {
-            toXml= voiceResponse.toXml();
+            toXml = voiceResponse.toXml();
         } catch (TwiMLException e) {
             e.printStackTrace();
         }
@@ -227,5 +225,27 @@ public class Webapp {
         voiceResponse = new VoiceResponse.Builder().say(say).build();
         System.out.println(voiceResponse.toXml().toString());
         return voiceResponse.toXml();
+    }
+
+    private static void dotenv() throws Exception {
+        final File env = new File(".env");
+        if (!env.exists()) {
+            return;
+        }
+
+        final Properties props = new Properties();
+        props.load(new FileInputStream(env));
+        props.putAll(System.getenv());
+        props.entrySet().forEach(p -> System.setProperty(p.getKey().toString(), p.getValue().toString()));
+    }
+
+    private static Map<String, String> toMap(List<NameValuePair> pairs) {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < pairs.size(); i++) {
+            NameValuePair pair = pairs.get(i);
+            System.out.println("NameValuePair - name=" + pair.getName() + " value=" + pair.getValue());
+            map.put(pair.getName(), pair.getValue());
+        }
+        return map;
     }
 }
