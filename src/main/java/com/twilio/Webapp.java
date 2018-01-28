@@ -64,16 +64,15 @@ public class Webapp {
          */
         post("/accessToken", (request, response) -> {
             // Read the identity param provided
-            String id = null;
+            String identity = null;
             List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
             Map<String, String> params = toMap(pairs);
             try {
-                id = params.get("identity");
+                identity = params.get("identity");
             } catch (Exception e) {
                 return "Error: " + e.getMessage();
             }
-            final String identity = id != null ? id : IDENTITY;
-            return getAccessToken(identity);
+            return getAccessToken(identity != null ? identity : IDENTITY);
         });
 
         /**
@@ -164,7 +163,7 @@ public class Webapp {
         });
     }
 
-    private static String getAccessToken(String identity) {
+    private static String getAccessToken(final String identity) {
         // Create Voice grant
         VoiceGrant grant = new VoiceGrant();
         grant.setOutgoingApplicationSid(System.getProperty("APP_SID"));
@@ -180,7 +179,7 @@ public class Webapp {
         return token.toJwt();
     }
 
-    private static String call(String to) {
+    private static String call(final String to) {
         VoiceResponse voiceResponse;
         String toXml = null;
         if (to == null || to.isEmpty()) {
@@ -205,7 +204,7 @@ public class Webapp {
         return toXml;
     }
 
-    private static String callUsingRestClient(String to, URI uri) {
+    private static String callUsingRestClient(final String to, final URI uri) {
         final TwilioRestClient client = new TwilioRestClient.Builder(System.getProperty("API_KEY"), System.getProperty("API_SECRET"))
                 .accountSid(System.getProperty("ACCOUNT_SID"))
                 .build();
@@ -239,7 +238,7 @@ public class Webapp {
         props.entrySet().forEach(p -> System.setProperty(p.getKey().toString(), p.getValue().toString()));
     }
 
-    private static Map<String, String> toMap(List<NameValuePair> pairs) {
+    private static Map<String, String> toMap(final List<NameValuePair> pairs) {
         Map<String, String> map = new HashMap<>();
         for (int i = 0; i < pairs.size(); i++) {
             NameValuePair pair = pairs.get(i);
