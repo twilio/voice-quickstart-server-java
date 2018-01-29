@@ -30,6 +30,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.Character;
 
 
 public class Webapp {
@@ -45,6 +46,14 @@ public class Webapp {
 
         // Log all requests and responses
         afterAfter(new LoggingFilter());
+
+        get("/", (request, response) -> {
+            return welcome();
+        });
+
+        post("/", (request, response) -> {
+           return welcome();
+        });
 
         /**
          * Creates an access token with VoiceGrant using your Twilio credentials.
@@ -185,7 +194,7 @@ public class Webapp {
         if (to == null || to.isEmpty()) {
             Say say = new Say.Builder("Congratulations! You have made your first call! Good bye.").build();
             voiceResponse = new VoiceResponse.Builder().say(say).build();
-        } else if (Character.isDigit(to.charAt(0)) || to.charAt(0) == '+') {
+        } else if (isNumeric(to)) {
             Number number = new Number.Builder(to).build();
             Dial dial = new Dial.Builder().callerId(CALLER_NUMBER).number(number)
                     .build();
@@ -209,7 +218,15 @@ public class Webapp {
                 .accountSid(System.getProperty("ACCOUNT_SID"))
                 .build();
 
-        if (Character.isDigit(to.charAt(0)) || to.charAt(0) == '+') {
+        if (to == null || to.isEmpty()) {
+            com.twilio.type.Client clientEndpoint = new com.twilio.type.Client("client:" + IDENTITY);
+            PhoneNumber from = new PhoneNumber(CALLER_ID);
+            // Make the call
+            Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
+            // Print the call SID (a 32 digit hex like CA123..)
+            System.out.println(call.getSid());
+            return call.getSid();
+        } else if (isNumeric(to)) {
             com.twilio.type.Client clientEndpoint = new com.twilio.type.Client(to);
             PhoneNumber from = new PhoneNumber(CALLER_NUMBER);
             // Make the call
@@ -218,7 +235,7 @@ public class Webapp {
             System.out.println(call.getSid());
             return call.getSid();
         } else {
-            com.twilio.type.Client clientEndpoint = new com.twilio.type.Client("client:"+to);
+            com.twilio.type.Client clientEndpoint = new com.twilio.type.Client("client:" + to);
             PhoneNumber from = new PhoneNumber(CALLER_ID);
             // Make the call
             Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
@@ -231,6 +248,14 @@ public class Webapp {
     private static String greet() {
         VoiceResponse voiceResponse;
         Say say = new Say.Builder("Congratulations! You have received your first inbound call! Good bye.").build();
+        voiceResponse = new VoiceResponse.Builder().say(say).build();
+        System.out.println(voiceResponse.toXml().toString());
+        return voiceResponse.toXml();
+    }
+
+    private static String welcome() {
+        VoiceResponse voiceResponse;
+        Say say = new Say.Builder("Welcome to Twilio").build();
         voiceResponse = new VoiceResponse.Builder().say(say).build();
         System.out.println(voiceResponse.toXml().toString());
         return voiceResponse.toXml();
@@ -256,5 +281,16 @@ public class Webapp {
             map.put(pair.getName(), pair.getValue());
         }
         return map;
+    }
+
+    private static boolean isNumeric(String s) {
+        int len = s.length();
+        for (int i = 0; i < len; ++i) {
+            if (!Character.isDigit(s.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
