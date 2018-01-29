@@ -209,13 +209,23 @@ public class Webapp {
                 .accountSid(System.getProperty("ACCOUNT_SID"))
                 .build();
 
-        com.twilio.type.Client clientEndpoint = new com.twilio.type.Client(to);
-        PhoneNumber from = new PhoneNumber(CALLER_NUMBER);
-        // Make the call
-        Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
-        // Print the call SID (a 32 digit hex like CA123..)
-        System.out.println(call.getSid());
-        return call.getSid();
+        if (Character.isDigit(to.charAt(0)) || to.charAt(0) == '+') {
+            com.twilio.type.Client clientEndpoint = new com.twilio.type.Client(to);
+            PhoneNumber from = new PhoneNumber(CALLER_NUMBER);
+            // Make the call
+            Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
+            // Print the call SID (a 32 digit hex like CA123..)
+            System.out.println(call.getSid());
+            return call.getSid();
+        } else {
+            com.twilio.type.Client clientEndpoint = new com.twilio.type.Client("client:"+to);
+            PhoneNumber from = new PhoneNumber(CALLER_ID);
+            // Make the call
+            Call call = Call.creator(clientEndpoint, from, uri).setMethod(HttpMethod.GET).create(client);
+            // Print the call SID (a 32 digit hex like CA123..)
+            System.out.println(call.getSid());
+            return call.getSid();
+        }
     }
 
     private static String greet() {
