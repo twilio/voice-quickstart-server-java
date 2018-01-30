@@ -284,7 +284,9 @@ public class Webapp {
     }
 
     private static boolean isPhoneNumber(String s) {
-        if(s.charAt(0) == '+') {
+        if (s.length() == 1) {
+            return isNumeric(s);
+        } else if (s.charAt(0) == '+') {
             return isNumeric(s.substring(1));
         } else {
             return isNumeric(s);
