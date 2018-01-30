@@ -194,7 +194,7 @@ public class Webapp {
         if (to == null || to.isEmpty()) {
             Say say = new Say.Builder("Congratulations! You have made your first call! Good bye.").build();
             voiceResponse = new VoiceResponse.Builder().say(say).build();
-        } else if (isNumeric(to)) {
+        } else if (isPhoneNumber(to)) {
             Number number = new Number.Builder(to).build();
             Dial dial = new Dial.Builder().callerId(CALLER_NUMBER).number(number)
                     .build();
@@ -283,6 +283,14 @@ public class Webapp {
         return map;
     }
 
+    private static boolean isPhoneNumber(String s) {
+        if(s.charAt(0) == '+') {
+            return isNumeric(s.substring(1));
+        } else {
+            return isNumeric(s);
+        }
+    }
+
     private static boolean isNumeric(String s) {
         int len = s.length();
         for (int i = 0; i < len; ++i) {
@@ -290,7 +298,6 @@ public class Webapp {
                 return false;
             }
         }
-
         return true;
     }
 }
