@@ -262,7 +262,12 @@ public class Webapp {
     }
 
     private static void dotenv() throws Exception {
-        final File env = new File(".env");
+		String envFilename = ".env";
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win"))
+            envFilename = ".env.windows.properties";
+
+        final File env = new File(envFilename);
         if (!env.exists()) {
             return;
         }
